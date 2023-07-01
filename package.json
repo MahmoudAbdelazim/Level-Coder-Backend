@@ -1,0 +1,35 @@
+{
+  "name": "level-coder-backend",
+  "version": "1.0.0",
+  "description": "Level Coder - A platform to learn competitive programming and problem solving through different learning channels and practice what you learn",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js",
+    "dev": "nodemon app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MahmoudAbdelazim/Level-Coder-Backend.git"
+  },
+  "author": "MahmoudAbdelazim",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/MahmoudAbdelazim/Level-Coder-Backend/issues"
+  },
+  "homepage": "https://github.com/MahmoudAbdelazim/Level-Coder-Backend#readme",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.20.2",
+    "express": "^4.18.2",
+    "express-fileupload": "^1.4.0",
+    "express-formidable": "^1.2.0",
+    "express-validator": "^7.0.1",
+    "jsonwebtoken": "^9.0.0",
+    "multer": "^1.4.5-lts.1",
+    "sequelize": "^6.32.1",
+    "sharp": "^0.32.1",
+    "sqlite3": "^5.1.6",
+    "tslib": "^2.6.0"
+  }
+}
