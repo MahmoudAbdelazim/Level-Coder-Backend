@@ -21,12 +21,4 @@ const Topic = sequelize.define("topic", {
   },
 });
 
-const TopicProblems = sequelize.define("topic_problems", {});
-Topic.belongsToMany(Problem, { through: TopicProblems });
-Problem.belongsToMany(Topic, { through: TopicProblems });
-
-const TopicResources = sequelize.define("topic_resources", {});
-Topic.belongsToMany(Resource, { through: TopicResources });
-Resource.belongsToMany(Topic, { through: TopicResources });
-
 module.exports = Topic;

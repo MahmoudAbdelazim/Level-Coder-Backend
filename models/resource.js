@@ -31,8 +31,4 @@ const Resource = sequelize.define("resource", {
   },
 });
 
-const UserCompletedResources = sequelize.define('user_completed_resources', {});
-Resource.belongsToMany(User, {through: UserCompletedResources});
-User.belongsToMany(Resource, {through: UserCompletedResources});
-
 module.exports = Resource;

@@ -21,16 +21,12 @@ const Section = sequelize.define("section", {
   },
 });
 
-const UserCompletedSections = sequelize.define('user_completed_sections', {});
-Section.belongsToMany(User, {through: UserCompletedSections});
-User.belongsToMany(Section, {through: UserCompletedSections});
-
 Resource.hasMany(Section, {
   foreignKey: "resourceId",
 });
 Section.belongsTo(Resource, {
   foreignKey: "resourceId",
-  as: "resource"
+  as: "resource",
 });
 
 module.exports = Section;

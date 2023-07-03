@@ -30,12 +30,8 @@ const Problem = sequelize.define("problem", {
     type: Sequelize.NUMBER,
   },
   acceptance: {
-    type: Sequelize.NUMBER
-  }
+    type: Sequelize.NUMBER,
+  },
 });
-
-const UserCompletedProblems = sequelize.define('user_completed_problems', {});
-Problem.belongsToMany(User, {through: UserCompletedProblems});
-User.belongsToMany(Problem, {through: UserCompletedProblems});
 
 module.exports = Problem;
