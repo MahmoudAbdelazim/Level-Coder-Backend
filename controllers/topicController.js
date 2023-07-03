@@ -39,7 +39,7 @@ exports.getAllTopics = async (req, res, next) => {
 
 exports.getTopic = async (req, res, next) => {
   try {
-    const id = req.body.id;
+    const id = req.params.id;
     if (!id) {
       res.status(400).json({ message: "id cannot be null" });
       return;
@@ -69,7 +69,7 @@ exports.getTopic = async (req, res, next) => {
         result.hrProblems.push(problemObj);
       }
     }
-    result.res.status(200).json({ topic: result });
+    res.status(200).json({ topic: result });
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
