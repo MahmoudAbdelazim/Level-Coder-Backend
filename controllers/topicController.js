@@ -72,12 +72,12 @@ exports.getTopic = async (req, res, next) => {
       }
     }
     const resources = await TopicResources.findAll({
-      where: { topic: topic.id },
+      where: { topicId: topic.id },
     });
     const resourceObjs = [];
     for (const resource of resources) {
       const resourceObj = await Resource.findByPk(resource.resourceId);
-      resourceObj.push(resourceObj);
+      resourceObjs.push(resourceObj);
     }
     result.resources = resourceObjs;
     res.status(200).json({ topic: result });
