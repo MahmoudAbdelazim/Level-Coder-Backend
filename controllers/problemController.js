@@ -1,5 +1,6 @@
 const Problem = require("../models/problem");
 const TopicProblems = require("../models/topicProblems");
+const UserCompletedProblems = require("../models/userCompletedProblems");
 
 exports.getAllProblems = async (req, res, next) => {
   try {
@@ -39,6 +40,40 @@ exports.addProblem = async (req, res, next) => {
       problemId: problem.id,
     });
     res.status(200).json({ problem: problem });
+  } catch (err) {
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err);
+  }
+};
+
+exports.toggleSolved = async (req, res, next) => {
+  try {
+    const userId = req.user.id;
+    const problemId = req.body.problem;
+
+    if (!problemId) {
+      res.status(400).json({ message: "Problem id cannot be null" });
+      return;
+    }
+    const problem = await Problem.findByPk(problemId);
+    if (!problem) {
+      res.status(404).json({ message: "Problem not found" });
+      return;
+    }
+    const userCompletedProblem = await UserCompletedProblems.findOne({
+      where: { userId: userId, problemId: problemId },
+    });
+    if (!userCompletedProblem) {
+      await UserCompletedProblems.create({
+        userId: userId,
+        problemId: problemId,
+      });
+    } else {
+      await userCompletedProblem.destroy();
+    }
+    res.status(200).json({ message: "Solved problem toggled successfully" });
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;

@@ -3,6 +3,7 @@ const Resource = require("../models/resource");
 const Topic = require("../models/topic");
 const TopicProblems = require("../models/topicProblems");
 const TopicResources = require("../models/topicResources");
+const UserCompletedProblems = require("../models/userCompletedProblems");
 
 exports.getAllTopics = async (req, res, next) => {
   try {
@@ -63,12 +64,30 @@ exports.getTopic = async (req, res, next) => {
     });
     for (const problem of topicProblems) {
       const problemObj = await Problem.findByPk(problem.problemId);
+      const obj = {
+        id: problemObj.id,
+        title: problemObj.title,
+        link: problemObj.link,
+        platform: problemObj.platform,
+        difficulty: problemObj.difficulty,
+        successRate: problemObj.successRate,
+        acceptance: problemObj.acceptance,
+        solved: false,
+      };
+      if (req.user) {
+        const userCompletedProblem = await UserCompletedProblems.findOne({
+          where: { userId: req.user.id, problemId: problemObj.id },
+        });
+        if (userCompletedProblem) {
+          obj.solved = true;
+        }
+      }
       if (problemObj.platform == "cf") {
-        result.cfProblems.push(problemObj);
+        result.cfProblems.push(obj);
       } else if (problemObj.platform == "lc") {
-        result.lcProblems.push(problemObj);
+        result.lcProblems.push(obj);
       } else if (problemObj.platform == "hr") {
-        result.hrProblems.push(problemObj);
+        result.hrProblems.push(obj);
       }
     }
     const resources = await TopicResources.findAll({
