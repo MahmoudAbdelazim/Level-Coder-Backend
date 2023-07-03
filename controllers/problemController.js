@@ -81,3 +81,50 @@ exports.toggleSolved = async (req, res, next) => {
     next(err);
   }
 };
+
+exports.getProblemsOfTopic = async (req, res, next) => {
+  try {
+    const topicId = req.params.topicId;
+    const topicProblems = await TopicProblems.findAll({
+      where: { topicId: topicId },
+    });
+    const result = {};
+    result.cfProblems = [];
+    result.lcProblems = [];
+    result.hrProblems = [];
+    for (const topicProblem of topicProblems) {
+      const problemObj = await Problem.findByPk(topicProblem.problemId);
+      const obj = {
+        id: problemObj.id,
+        title: problemObj.title,
+        link: problemObj.link,
+        platform: problemObj.platform,
+        difficulty: problemObj.difficulty,
+        successRate: problemObj.successRate,
+        acceptance: problemObj.acceptance,
+        solved: false,
+      };
+      if (req.user) {
+        const userCompletedProblem = await UserCompletedProblems.findOne({
+          where: { userId: req.user.id, problemId: problemObj.id },
+        });
+        if (userCompletedProblem) {
+          obj.solved = true;
+        }
+      }
+      if (problemObj.platform == "cf") {
+        result.cfProblems.push(obj);
+      } else if (problemObj.platform == "lc") {
+        result.lcProblems.push(obj);
+      } else if (problemObj.platform == "hr") {
+        result.hrProblems.push(obj);
+      }
+    }
+    res.status(200).json({ problems: result });
+  } catch (err) {
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err);
+  }
+};
