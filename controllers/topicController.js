@@ -1,6 +1,8 @@
 const Problem = require("../models/problem");
+const Resource = require("../models/resource");
 const Topic = require("../models/topic");
 const TopicProblems = require("../models/topicProblems");
+const TopicResources = require("../models/topicResources");
 
 exports.getAllTopics = async (req, res, next) => {
   try {
@@ -69,6 +71,15 @@ exports.getTopic = async (req, res, next) => {
         result.hrProblems.push(problemObj);
       }
     }
+    const resources = await TopicResources.findAll({
+      where: { topic: topic.id },
+    });
+    const resourceObjs = [];
+    for (const resource of resources) {
+      const resourceObj = await Resource.findByPk(resource.resourceId);
+      resourceObj.push(resourceObj);
+    }
+    result.resources = resourceObjs;
     res.status(200).json({ topic: result });
   } catch (err) {
     if (!err.statusCode) {
