@@ -128,3 +128,24 @@ exports.getProblemsOfTopic = async (req, res, next) => {
     next(err);
   }
 };
+
+exports.deleteProblem = async (req, res, next) => {
+  try {
+    const problemId = req.params.id;
+    const problem = await Problem.findByPk(problemId);
+    if (!problem) {
+      res.status(404).json({ message: "Problem not found" });
+      return;
+    }
+    await UserCompletedProblems.destroy({
+      where: { problemId: problem.id },
+    });
+    await problem.destroy();
+    res.status(200).json({ message: "Problem deleted successfully" });
+  } catch (err) {
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err);
+  }
+};

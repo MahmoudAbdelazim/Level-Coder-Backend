@@ -7,6 +7,7 @@ const router = express.Router();
 
 router.get("/all-topics", topicController.getAllTopics);
 router.get("/topic/:id", optionalAuthenticate, topicController.getTopic);
+router.delete("/topic/:id", topicController.deleteTopic);
 router.post("/add-topic", topicController.addTopic);
 
 module.exports = router;

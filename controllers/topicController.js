@@ -4,6 +4,7 @@ const Topic = require("../models/topic");
 const TopicProblems = require("../models/topicProblems");
 const TopicResources = require("../models/topicResources");
 const UserCompletedProblems = require("../models/userCompletedProblems");
+const UserCompletedResources = require("../models/userCompletedResources");
 
 exports.getAllTopics = async (req, res, next) => {
   try {
@@ -53,12 +54,12 @@ exports.getTopic = async (req, res, next) => {
       return;
     }
     const result = {};
+    result.id = topic.id;
     result.name = topic.name;
     result.description = topic.description;
     result.cfProblems = [];
     result.lcProblems = [];
     result.hrProblems = [];
-
     const topicProblems = await TopicProblems.findAll({
       where: { topicId: id },
     });
@@ -96,7 +97,24 @@ exports.getTopic = async (req, res, next) => {
     const resourceObjs = [];
     for (const resource of resources) {
       const resourceObj = await Resource.findByPk(resource.resourceId);
-      resourceObjs.push(resourceObj);
+      const obj = {
+        id: resourceObj.id,
+        title: resourceObj.title,
+        link: resourceObj.link,
+        platform: resourceObj.platform,
+        language: resourceObj.language,
+        description: resourceObj.description,
+        completed: false,
+      };
+      if (req.user) {
+        const userCompletedResource = await UserCompletedResources.findOne({
+          where: { userId: req.user.id, resourceId: resourceObj.id },
+        });
+        if (userCompletedResource) {
+          obj.completed = true;
+        }
+      }
+      resourceObjs.push(obj);
     }
     result.resources = resourceObjs;
     res.status(200).json({ topic: result });
@@ -121,6 +139,46 @@ exports.addTopic = async (req, res, next) => {
       description: description,
     });
     res.status(200).json({ topic: topic });
+  } catch (err) {
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err);
+  }
+};
+
+exports.deleteTopic = async (req, res, next) => {
+  try {
+    const topicId = req.params.id;
+    const topic = await Topic.findByPk(topicId);
+    if (!topic) {
+      res.status(404).json({ message: "Topic not found" });
+      return;
+    }
+    const topicProblems = await TopicProblems.findAll({
+      where: { topicId: topicId },
+    });
+    const topicResources = await TopicResources.findAll({
+      where: { topicId: topicId },
+    });
+    for (const topicProblem of topicProblems) {
+      const problem = await Problem.findByPk(topicProblem.problemId);
+      await UserCompletedProblems.destroy({
+        where: { problemId: problem.id },
+      });
+      await problem.destroy();
+      await topicProblem.destroy();
+    }
+    for (const topicResource of topicResources) {
+      const resource = await Resource.findByPk(topicResource.resourceId);
+      await UserCompletedResources.destroy({
+        where: { resourceId: resource.id },
+      });
+      await resource.destroy();
+      await topicResource.destroy();
+    }
+    await topic.destroy();
+    res.status(200).json({ message: "Topic deleted successfully" });
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
