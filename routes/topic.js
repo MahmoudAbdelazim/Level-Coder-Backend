@@ -6,6 +6,7 @@ const authenticate = require("../middleware/authenticate");
 const router = express.Router();
 
 router.get("/all-topics", topicController.getAllTopics);
+router.get("/all-topic-names", topicController.getAllTopicNames);
 router.get("/topic/:id", optionalAuthenticate, topicController.getTopic);
 router.get(
   "/topic-by-name/:name",
