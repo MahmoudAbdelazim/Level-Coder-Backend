@@ -10,6 +10,7 @@ const userRoutes = require("./routes/user");
 const suggestionRoutes = require("./routes/suggestion");
 
 const sequelize = require("./util/database");
+const User = require("./models/user");
 
 const app = express();
 

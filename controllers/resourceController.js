@@ -16,6 +16,12 @@ exports.getAllResources = async (req, res, next) => {
 
 exports.addResource = async (req, res, next) => {
   try {
+    if (req.user.role != "ADMIN") {
+      res
+        .status(301)
+        .json({ message: "User not authorized for this operation" });
+      return;
+    }
     const title = req.body.title;
     const link = req.body.link;
     const platform = req.body.platform;
@@ -121,6 +127,12 @@ exports.getResourcesOfTopic = async (req, res, next) => {
 
 exports.deleteResource = async (req, res, next) => {
   try {
+    if (req.user.role != "ADMIN") {
+      res
+        .status(301)
+        .json({ message: "User not authorized for this operation" });
+      return;
+    }
     const resourceId = req.params.id;
     const resource = await Resource.findByPk(resourceId);
     if (!resource) {

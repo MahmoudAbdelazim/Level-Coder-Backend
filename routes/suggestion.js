@@ -5,7 +5,11 @@ const authenticate = require("../middleware/authenticate");
 
 const router = express.Router();
 
-router.get("/all-suggestions", suggestionController.getAllSuggestions);
+router.get(
+  "/all-suggestions",
+  authenticate,
+  suggestionController.getAllSuggestions
+);
 router.post(
   "/add-suggestion",
   authenticate,

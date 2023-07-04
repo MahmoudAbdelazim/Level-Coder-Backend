@@ -16,6 +16,12 @@ exports.getAllProblems = async (req, res, next) => {
 
 exports.addProblem = async (req, res, next) => {
   try {
+    if (req.user.role != "ADMIN") {
+      res
+        .status(301)
+        .json({ message: "User not authorized for this operation" });
+      return;
+    }
     const title = req.body.title;
     const link = req.body.link;
     const platform = req.body.platform;
@@ -131,6 +137,12 @@ exports.getProblemsOfTopic = async (req, res, next) => {
 
 exports.deleteProblem = async (req, res, next) => {
   try {
+    if (req.user.role != "ADMIN") {
+      res
+        .status(301)
+        .json({ message: "User not authorized for this operation" });
+      return;
+    }
     const problemId = req.params.id;
     const problem = await Problem.findByPk(problemId);
     if (!problem) {

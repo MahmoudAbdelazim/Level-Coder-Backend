@@ -213,6 +213,12 @@ exports.getTopicByName = async (req, res, next) => {
 
 exports.addTopic = async (req, res, next) => {
   try {
+    if (req.user.role != "ADMIN") {
+      res
+        .status(301)
+        .json({ message: "User not authorized for this operation" });
+      return;
+    }
     const name = req.body.name;
     const description = req.body.description;
     if (!name || !description) {
@@ -234,6 +240,12 @@ exports.addTopic = async (req, res, next) => {
 
 exports.deleteTopic = async (req, res, next) => {
   try {
+    if (req.user.role != "ADMIN") {
+      res
+        .status(301)
+        .json({ message: "User not authorized for this operation" });
+      return;
+    }
     const topicId = req.params.id;
     const topic = await Topic.findByPk(topicId);
     if (!topic) {

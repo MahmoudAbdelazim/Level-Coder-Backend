@@ -8,8 +8,8 @@ const authenticate = require("../middleware/authenticate");
 const optionalAuthenticate = require("../middleware/optionalAuthenticate");
 
 router.get("/all-resources", resourceController.getAllResources);
-router.post("/add-resource", resourceController.addResource);
-router.delete("/resource/:id", resourceController.deleteResource);
+router.post("/add-resource", authenticate, resourceController.addResource);
+router.delete("/resource/:id", authenticate, resourceController.deleteResource);
 router.post(
   "/toggle-completed",
   authenticate,

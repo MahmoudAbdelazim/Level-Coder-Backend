@@ -2,6 +2,12 @@ const Suggestion = require("../models/suggestion");
 
 exports.getAllSuggestions = async (req, res, next) => {
   try {
+    if (req.user.role != "ADMIN") {
+      res
+        .status(301)
+        .json({ message: "User not authorized for this operation" });
+      return;
+    }
     const suggestions = await Suggestion.findAll({ order: [["id", "DESC"]] });
     res.status(200).json({ suggestions: suggestions });
   } catch (err) {

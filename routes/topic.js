@@ -2,7 +2,7 @@ const express = require("express");
 
 const topicController = require("../controllers/topicController");
 const optionalAuthenticate = require("../middleware/optionalAuthenticate");
-
+const authenticate = require("../middleware/authenticate");
 const router = express.Router();
 
 router.get("/all-topics", topicController.getAllTopics);
@@ -12,7 +12,7 @@ router.get(
   optionalAuthenticate,
   topicController.getTopicByName
 );
-router.delete("/topic/:id", topicController.deleteTopic);
-router.post("/add-topic", topicController.addTopic);
+router.delete("/topic/:id", authenticate, topicController.deleteTopic);
+router.post("/add-topic", authenticate, topicController.addTopic);
 
 module.exports = router;
