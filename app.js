@@ -6,8 +6,8 @@ const problemRoutes = require("./routes/problem");
 const resourceRoutes = require("./routes/resource");
 const sectionRoutes = require("./routes/section");
 const topicRoutes = require("./routes/topic");
-const userRoutes = require("./routes/user");
 const suggestionRoutes = require("./routes/suggestion");
+const userRoutes = require("./routes/user");
 
 const sequelize = require("./util/database");
 const User = require("./models/user");
