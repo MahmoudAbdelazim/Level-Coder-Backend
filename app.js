@@ -51,11 +51,12 @@ app.use((error, req, res, next) => {
   res.status(status).json({ message: message, data: data });
 });
 
+const port = process.env.PORT || 9001;
 sequelize
   // .sync({ force: true })
   .sync()
   .then((result) => {
-    app.listen(3001);
+    app.listen(port);
   })
   .catch((err) => {
     console.log(err);

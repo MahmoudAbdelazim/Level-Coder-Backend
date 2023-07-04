@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "Level Coder - A platform to learn competitive programming and problem solving through different learning channels and practice what you learn",
   "main": "app.js",
+  "engines": {
+    "node": "14.x"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node app.js",
