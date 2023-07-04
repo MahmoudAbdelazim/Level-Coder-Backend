@@ -2,7 +2,7 @@ const Suggestion = require("../models/suggestion");
 
 exports.getAllSuggestions = async (req, res, next) => {
   try {
-    const suggestions = await Suggestion.findAll({ order: ["id", "DESC"] });
+    const suggestions = await Suggestion.findAll({ order: [["id", "DESC"]] });
     res.status(200).json({ suggestions: suggestions });
   } catch (err) {
     if (!err.statusCode) {
