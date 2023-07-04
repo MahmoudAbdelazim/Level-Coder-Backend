@@ -126,6 +126,91 @@ exports.getTopic = async (req, res, next) => {
   }
 };
 
+exports.getTopicByName = async (req, res, next) => {
+  try {
+    const name = req.params.name;
+    if (!name) {
+      res.status(400).json({ message: "Name cannot be null" });
+      return;
+    }
+    const topic = await Topic.findOne({ where: { name: name } });
+    if (!topic) {
+      res.status(404).json({ message: "Topic not found" });
+      return;
+    }
+    const result = {};
+    result.id = topic.id;
+    result.name = topic.name;
+    result.description = topic.description;
+    result.cfProblems = [];
+    result.lcProblems = [];
+    result.hrProblems = [];
+    const topicProblems = await TopicProblems.findAll({
+      where: { topicId: topic.id },
+    });
+    for (const problem of topicProblems) {
+      const problemObj = await Problem.findByPk(problem.problemId);
+      const obj = {
+        id: problemObj.id,
+        title: problemObj.title,
+        link: problemObj.link,
+        platform: problemObj.platform,
+        difficulty: problemObj.difficulty,
+        successRate: problemObj.successRate,
+        acceptance: problemObj.acceptance,
+        solved: false,
+      };
+      if (req.user) {
+        const userCompletedProblem = await UserCompletedProblems.findOne({
+          where: { userId: req.user.id, problemId: problemObj.id },
+        });
+        if (userCompletedProblem) {
+          obj.solved = true;
+        }
+      }
+      if (problemObj.platform == "cf") {
+        result.cfProblems.push(obj);
+      } else if (problemObj.platform == "lc") {
+        result.lcProblems.push(obj);
+      } else if (problemObj.platform == "hr") {
+        result.hrProblems.push(obj);
+      }
+    }
+    const resources = await TopicResources.findAll({
+      where: { topicId: topic.id },
+    });
+    const resourceObjs = [];
+    for (const resource of resources) {
+      const resourceObj = await Resource.findByPk(resource.resourceId);
+      const obj = {
+        id: resourceObj.id,
+        title: resourceObj.title,
+        link: resourceObj.link,
+        platform: resourceObj.platform,
+        language: resourceObj.language,
+        description: resourceObj.description,
+        completed: false,
+      };
+      if (req.user) {
+        const userCompletedResource = await UserCompletedResources.findOne({
+          where: { userId: req.user.id, resourceId: resourceObj.id },
+        });
+        if (userCompletedResource) {
+          obj.completed = true;
+        }
+      }
+      resourceObjs.push(obj);
+    }
+    result.resources = resourceObjs;
+    res.status(200).json({ topic: result });
+  } catch (err) {
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err);
+  }
+};
+
 exports.addTopic = async (req, res, next) => {
   try {
     const name = req.body.name;
