@@ -7,6 +7,7 @@ const resourceRoutes = require("./routes/resource");
 const sectionRoutes = require("./routes/section");
 const topicRoutes = require("./routes/topic");
 const userRoutes = require("./routes/user");
+const suggestionRoutes = require("./routes/suggestion");
 
 const sequelize = require("./util/database");
 
@@ -39,6 +40,7 @@ app.use("/resource", resourceRoutes);
 app.use("/section", sectionRoutes);
 app.use("/topic", topicRoutes);
 app.use("/user", userRoutes);
+app.use("/suggestion", suggestionRoutes);
 
 app.use((error, req, res, next) => {
   console.log(error);
