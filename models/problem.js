@@ -24,13 +24,13 @@ const Problem = sequelize.define("problem", {
     allowNull: false,
   },
   difficulty: {
-    type: Sequelize.NUMBER,
+    type: Sequelize.INTEGER,
   },
   successRate: {
-    type: Sequelize.NUMBER,
+    type: Sequelize.INTEGER,
   },
   acceptance: {
-    type: Sequelize.NUMBER,
+    type: Sequelize.INTEGER,
   },
 });
 
